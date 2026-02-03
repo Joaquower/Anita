@@ -51,6 +51,7 @@ h1 {
   margin-bottom: 1rem;
   text-transform: uppercase;
 }
+/*Comentario sexy*/
 
 .details {
   background: rgba(0, 0, 0, 0.5);
