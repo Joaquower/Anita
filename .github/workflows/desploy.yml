@@ -22,7 +22,9 @@ jobs:
         run: npm install
 
       - name: Build Angular
-        run: npm run build -- --configuration production
+        # CORRECCIÓN: Se eliminó "-- --configuration production"
+        # Vite ya construye en modo producción automáticamente con este comando.
+        run: npm run build 
 
       - name: Upload build to GoDaddy
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
@@ -31,5 +33,8 @@ jobs:
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
           port: ${{ secrets.FTP_PORT }}
-          local-dir: dist/ecommerce-angular/browser/
+          # OJO: Verifica esta ruta. Vite puro suele generar todo en "dist/"
+          # Si tu despliegue falla diciendo que no encuentra la carpeta,
+          # cambia esto a: local-dir: dist/
+          local-dir: dist/ecommerce-angular/browser/ 
           server-dir: /
