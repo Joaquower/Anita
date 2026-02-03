@@ -2,8 +2,7 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 
-const email = ref('')
-const password = ref('')
+const username = ref('')
 const router = useRouter()
 const isLoading = ref(false)
 
@@ -12,10 +11,10 @@ const handleLogin = async () => {
   // Mock login delay
   await new Promise(resolve => setTimeout(resolve, 800))
   
-  if (email.value && password.value) {
+  if (username.value) {
     // Store mock auth
     localStorage.setItem('authToken', 'mock-jwt-token-123')
-    localStorage.setItem('userEmail', email.value)
+    localStorage.setItem('userEmail', username.value) // We keep the key 'userEmail' for compatibility with other components
     router.push('/files')
   }
   isLoading.value = false
@@ -25,28 +24,25 @@ const handleLogin = async () => {
 <template>
   <div class="login-container">
     <div class="glass-card login-box">
-      <h1 class="title">SecureDoc Vault</h1>
-      <p class="subtitle">Acceso de Alta Seguridad</p>
+      <div class="welcome-header">
+        <span class="icon">🦷</span>
+        <h1 class="title">Notas de Ana</h1>
+        <p class="subtitle">PROFESIONAL ODONTÓLOGA</p>
+      </div>
       
       <form @submit.prevent="handleLogin" class="login-form">
         <div class="input-group">
-          <label>Email Corporativo</label>
-          <input type="email" v-model="email" placeholder="usuario@empresa.com" required />
+          <label>Usuario</label>
+          <input type="text" v-model="username" placeholder="Tu nombre..." required />
         </div>
         
-        <div class="input-group">
-          <label>Contraseña</label>
-          <input type="password" v-model="password" placeholder="••••••••" required />
-        </div>
-
         <button type="submit" class="btn-primary" :disabled="isLoading">
-          {{ isLoading ? 'Verificando...' : 'Acceder' }}
+          {{ isLoading ? 'Entrando...' : 'Ingresar' }}
         </button>
       </form>
 
-      <div class="security-badges">
-        <span class="badge">🔒 End-to-End Encrypted</span>
-        <span class="badge">👁️ Activity Monitored</span>
+      <div class="footer-decor">
+        ✨ Bienvenida ✨
       </div>
     </div>
   </div>
@@ -58,26 +54,47 @@ const handleLogin = async () => {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: radial-gradient(circle at center, #1e293b 0%, #0f172a 100%);
+  background: linear-gradient(135deg, #fdfbf7 0%, #ffe4e6 100%); /* Cream to Soft Pink */
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .login-box {
   width: 100%;
-  max-width: 400px;
+  max-width: 380px;
   text-align: center;
+  padding: 3rem 2rem;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
+  border-radius: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  box-shadow: 0 10px 40px rgba(255, 182, 193, 0.2);
+}
+
+.welcome-header {
+  margin-bottom: 2.5rem;
+}
+
+.icon {
+  font-size: 3rem;
+  display: block;
+  margin-bottom: 1rem;
+  animation: float 3s ease-in-out infinite;
 }
 
 .title {
   font-size: 2rem;
-  margin-bottom: 0.5rem;
-  background: linear-gradient(to right, #3b82f6, #8b5cf6);
-  -webkit-background-clip: text;
-  color: transparent;
+  margin-bottom: 0.2rem;
+  color: #d977a5; /* Deep Pastel Pink */
+  font-weight: 700;
+  letter-spacing: -0.5px;
 }
 
 .subtitle {
-  color: var(--color-text-dim);
-  margin-bottom: 2rem;
+  color: #eab308; /* Golden Yellow */
+  font-size: 0.9rem;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
 }
 
 .login-form {
@@ -93,39 +110,63 @@ const handleLogin = async () => {
 .input-group label {
   display: block;
   margin-bottom: 0.5rem;
-  font-size: 0.875rem;
-  color: var(--color-text-dim);
+  font-size: 0.85rem;
+  color: #888;
+  font-weight: 500;
+  margin-left: 0.5rem;
 }
 
 .input-group input {
-  width: 100%;
-  padding: 0.75rem;
-  background: rgba(0, 0, 0, 0.2);
-  border: 1px solid var(--glass-border);
-  border-radius: 0.5rem;
-  color: white;
+  width: 90%;
+  padding: 1rem;
+  background: #fff;
+  border: 2px solid #fce7f3;
+  border-radius: 16px;
+  color: #555;
   font-size: 1rem;
-  transition: all 0.3s;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.02);
 }
 
 .input-group input:focus {
   outline: none;
-  border-color: var(--color-primary);
-  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+  border-color: #fca5a5;
+  box-shadow: 0 0 0 4px rgba(252, 165, 165, 0.1);
 }
 
-.security-badges {
+.btn-primary {
+  background: linear-gradient(to right, #f472b6, #fbbf24); /* Pink to Yellow */
+  border: none;
+  padding: 1rem;
+  border-radius: 16px;
+  color: white;
+  font-weight: 700;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+  margin-top: 1rem;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(244, 114, 182, 0.3);
+}
+
+.btn-primary:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.footer-decor {
   margin-top: 2rem;
-  display: flex;
-  justify-content: center;
-  gap: 1rem;
-  font-size: 0.75rem;
-  color: var(--color-text-dim);
+  font-size: 0.9rem;
+  color: #c084fc;
+  opacity: 0.8;
 }
 
-.badge {
-  background: rgba(255, 255, 255, 0.05);
-  padding: 0.25rem 0.5rem;
-  border-radius: 999px;
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+  100% { transform: translateY(0px); }
 }
 </style>

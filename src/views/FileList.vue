@@ -1,18 +1,38 @@
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, shallowRef } from 'vue'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
-const files = ref([])
+const files = shallowRef([])
 const loading = ref(true)
 const userEmail = localStorage.getItem('userEmail')
 
 const fetchFiles = async () => {
     try {
-        const res = await fetch('/api/list')
-        files.value = await res.json()
+        // En producción usará el PHP, en local intentamos usar el json si falla el php
+        // Ojo: En local (localhost) el PHP no funcionará a menos que tengas un servidor PHP corriendo.
+        // Pero en tu servidor real sí funcionará.
+        let url = '/list-files.php'
+        
+        // Pequeño truco para desarrollo: si estamos en localhost y falla el PHP, intentamos el json antiguo
+        if (window.location.hostname === 'localhost') {
+             // En local dejamos que falle o podriamos poner un fallback, 
+             // pero por ahora apuntamos directo al script que subiras.
+        }
+
+        const res = await fetch(url)
+        if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`)
+        
+        const data = await res.json()
+        if (Array.isArray(data)) {
+            files.value = data
+        } else {
+            files.value = []
+            console.error('Invalid data format in notas.json')
+        }
     } catch (e) {
-        console.error(e)
+        console.error('Error fetching files:', e)
+        files.value = []
     } finally {
         loading.value = false
     }
@@ -34,15 +54,15 @@ onMounted(() => {
   <div class="explorer-container">
     <div class="glass-card explorer-box">
       <div class="header">
-        <h1>Documentos Seguros</h1>
-        <div class="user-badge">👤 {{ userEmail }}</div>
+        <h1>Mis Documentos</h1>
+        <div class="user-badge">🌸 {{ userEmail }}</div>
       </div>
 
       <div class="file-list">
-        <div v-if="loading" class="loading">Cargando documentos...</div>
+        <div v-if="loading" class="loading">Cargando notitas... 🎀</div>
         
         <div v-else-if="files.length === 0" class="empty-state">
-            📂 No se encontraron documentos PDF en la carpeta ../notas
+            📂 No encontré documentos en la carpeta ./notas
         </div>
 
         <div 
@@ -54,12 +74,12 @@ onMounted(() => {
         >
             <span class="file-icon">📄</span>
             <span class="file-name">{{ file.name }}</span>
-            <span class="file-action">BLOQUEADO</span>
+            <span class="file-action">VER</span>
         </div>
       </div>
       
       <div class="footer-note">
-        ⚠️ Todo acceso queda registrado. No intente copiar.
+        Solo para uso personal 💖
       </div>
     </div>
   </div>
@@ -69,9 +89,10 @@ onMounted(() => {
 .explorer-container {
   min-height: 100vh;
   padding: 2rem;
-  background: radial-gradient(circle at top right, #1e293b 0%, #0f172a 100%);
+  background: linear-gradient(135deg, #fdfbf7 0%, #ffe4e6 100%);
   display: flex;
   justify-content: center;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .explorer-box {
@@ -79,6 +100,12 @@ onMounted(() => {
   max-width: 800px;
   display: flex;
   flex-direction: column;
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(10px);
+  border-radius: 24px;
+  padding: 2rem;
+  box-shadow: 0 10px 40px rgba(255, 182, 193, 0.2);
+  border: 1px solid rgba(255,255,255,0.8);
 }
 
 .header {
@@ -86,16 +113,24 @@ onMounted(() => {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 2rem;
-  border-bottom: 1px solid rgba(255,255,255,0.1);
+  border-bottom: 2px solid #fce7f3;
   padding-bottom: 1rem;
 }
 
+.header h1 {
+  color: #d977a5;
+  font-size: 1.8rem;
+  margin: 0;
+}
+
 .user-badge {
-    background: rgba(59, 130, 246, 0.2);
+    background: #fff0f5;
     padding: 0.5rem 1rem;
     border-radius: 2rem;
     font-size: 0.9rem;
-    color: #93c5fd;
+    color: #db2777;
+    border: 1px solid #fbcfe8;
+    font-weight: 600;
 }
 
 .file-list {
@@ -105,55 +140,67 @@ onMounted(() => {
 }
 
 .file-item {
-    background: rgba(255,255,255,0.03);
+    background: #fff;
     padding: 1.5rem;
-    border-radius: 0.5rem;
+    border-radius: 16px;
     display: flex;
     align-items: center;
-    border: 1px solid transparent;
+    border: 1px solid #f3f4f6;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.02);
 }
 
 .file-item:hover {
-    background: rgba(255,255,255,0.07);
-    border-color: var(--color-primary);
+    background: #fffbfc;
+    border-color: #fbcfe8;
     transform: translateX(5px);
+    box-shadow: 0 4px 12px rgba(251, 207, 232, 0.4);
 }
 
 .file-icon {
     font-size: 1.5rem;
     margin-right: 1rem;
+    filter: drop-shadow(0 2px 2px rgba(0,0,0,0.1));
 }
 
 .file-name {
     flex: 1;
     font-size: 1.1rem;
+    color: #4b5563;
+    font-weight: 500;
 }
 
 .file-action {
-    font-size: 0.7rem;
-    opacity: 0.5;
-    letter-spacing: 2px;
+    font-size: 0.75rem;
+    color: #9ca3af;
+    letter-spacing: 1px;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.file-item:hover .file-action {
+    color: #db2777;
 }
 
 .empty-state {
     text-align: center;
     padding: 3rem;
-    color: var(--color-text-dim);
+    color: #9ca3af;
 }
 
 .footer-note {
     margin-top: 3rem;
     text-align: center;
-    color: var(--color-danger);
-    font-size: 0.8rem;
-    opacity: 0.7;
+    color: #d977a5;
+    font-size: 0.85rem;
+    opacity: 0.8;
 }
 
 .loading {
     text-align: center;
     padding: 2rem;
-    color: var(--color-primary);
+    color: #d977a5;
+    font-weight: 600;
 }
 </style>
