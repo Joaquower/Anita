@@ -8,13 +8,11 @@ const isLoading = ref(false)
 
 const handleLogin = async () => {
   isLoading.value = true
-  // Mock login delay
   await new Promise(resolve => setTimeout(resolve, 800))
   
   if (username.value) {
-    // Store mock auth
     localStorage.setItem('authToken', 'mock-jwt-token-123')
-    localStorage.setItem('userEmail', username.value) // We keep the key 'userEmail' for compatibility with other components
+    localStorage.setItem('userEmail', username.value)
     router.push('/files')
   }
   isLoading.value = false
@@ -135,7 +133,7 @@ const handleLogin = async () => {
 }
 
 .btn-primary {
-  background: linear-gradient(to right, #f472b6, #fbbf24); /* Pink to Yellow */
+  background: linear-gradient(to right, #f472b6, #fbbf24); /* Pink to kaki*/
   border: none;
   padding: 1rem;
   border-radius: 16px;
