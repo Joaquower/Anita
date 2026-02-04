@@ -273,9 +273,7 @@ onUnmounted(() => {
         </div>
     </div>
 
-    <!-- PROTECTION STRIP (Always visible or conditioned?) -->
-    <!-- The user wanted a strip that covers PART to force partial screenshots -->
-    <ProtectionStrip v-if="!isBlocked" />
+    <!-- PROTECTION STRIP REMOVED BY USER REQUEST (Tapa mucho texto) -->
     
     <!-- Study Toolbar (Desktop & Mobile Adaptado) -->
     <!-- On mobile, this will be a bottom bar or overlay -->
@@ -378,9 +376,9 @@ onUnmounted(() => {
     position: relative;
     width: 100vw;
     height: 100vh;
-    background: #fdfbf7;
+    background: #fff0f5; /* Lavender Blush */
     overflow: hidden;
-    font-family: 'Segoe UI', sans-serif;
+    font-family: 'Quicksand', sans-serif;
     display: flex;
     flex-direction: column;
 }
@@ -390,72 +388,89 @@ onUnmounted(() => {
     left: 2rem;
     top: 50%;
     transform: translateY(-50%);
-    background: rgba(255, 255, 255, 0.9);
-    backdrop-filter: blur(10px);
+    background: white;
     padding: 1rem;
-    border-radius: 16px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    border-radius: 20px;
+    box-shadow: 0 4px 20px rgba(224, 33, 138, 0.1);
     z-index: 100;
     display: flex;
     flex-direction: column;
     gap: 1rem;
-    border: 1px solid #fce7f3;
+    border: 2px solid #ffb7c5;
 }
 
 .tool-group {
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
+    gap: 0.8rem;
 }
 
 .tool-btn {
     background: white;
-    border: 1px solid #fbcfe8;
-    padding: 0.5rem;
-    border-radius: 8px;
+    border: 2px solid #e0218a;
+    padding: 0.6rem;
+    border-radius: 12px;
     cursor: pointer;
-    font-weight: 600;
-    color: #db2777;
+    font-weight: 700;
+    color: #e0218a;
     transition: all 0.2s;
     font-size: 0.9rem;
 }
 
 .tool-btn:hover {
-    background: #fff0f5;
+    background: #e0218a;
+    color: white;
     transform: translateX(2px);
 }
 
 .tool-btn.active {
-    background: #fbcfe8;
-    color: #831843;
+    background: #e0218a;
+    color: white;
 }
 
 .tool-info {
-    font-size: 0.7rem;
+    font-size: 0.8rem;
     text-align: center;
-    color: #9ca3af;
+    color: #e0218a;
     writing-mode: vertical-rl;
     text-orientation: mixed;
     transform: rotate(180deg);
+    font-weight: 700;
+    letter-spacing: 2px;
 }
 
 .top-bar {
     padding: 0.8rem 2rem;
     background: white;
-    border-bottom: 2px solid #fff0f5;
+    border-bottom: 2px solid #ffb7c5;
     display: flex;
     justify-content: space-between;
     align-items: center;
     z-index: 50;
+    box-shadow: 0 2px 10px rgba(224, 33, 138, 0.1);
 }
 
 .back-btn {
-    background: transparent;
-    border: none;
-    color: #db2777;
+    background: white;
+    border: 2px solid #e0218a;
+    color: #e0218a;
     font-weight: bold;
     cursor: pointer;
     font-size: 1rem;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+}
+
+.back-btn:hover {
+    background: #e0218a;
+    color: white;
+}
+
+.doc-title {
+    font-family: 'Dancing Script', cursive;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #e0218a;
 }
 
 .scroll-container {
@@ -465,7 +480,7 @@ onUnmounted(() => {
     display: flex;
     flex-direction: column;
     align-items: center;
-    background: #fdfbf7;
+    background: #fff0f5;
 }
 
 .pdf-pages {
@@ -477,10 +492,11 @@ onUnmounted(() => {
 }
 
 .page-wrapper {
-    position: relative; /* Critical for TextLayer positioning */
-    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-    border-radius: 2px;
+    position: relative;
+    box-shadow: 0 10px 30px rgba(224, 33, 138, 0.15);
+    border-radius: 4px;
     background: white;
+    border: 1px solid #ffe4e6;
 }
 
 canvas {
@@ -488,6 +504,7 @@ canvas {
     background-color: white;
 }
 
+/* ... existing block & watermark CSS ... */
 .watermark-layer {
     position: fixed;
     top: 0;
@@ -495,12 +512,12 @@ canvas {
     width: 100%;
     height: 100%;
     pointer-events: none;
-    z-index: 200; /* Above text but below notes */
+    z-index: 200;
 }
 
 .floating-mark {
     position: absolute;
-    color: rgba(219, 39, 119, 0.1);
+    color: rgba(224, 33, 138, 0.1); /* Pink watermark */
     font-size: 1.2rem;
     font-weight: bold;
     transform: rotate(-15deg);
@@ -513,24 +530,26 @@ canvas {
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.95);
+    background: white; /* Less aggressive block screen? Or keep dark? User asked for white. */
     z-index: 10000;
     display: flex;
     align-items: center;
     justify-content: center;
     flex-direction: column;
-    color: white;
+    color: #e0218a;
     text-align: center;
 }
 
 .blocked-content h1 {
     font-size: 3rem;
-    color: #ef4444;
+    color: #e0218a;
     margin-bottom: 2rem;
+    font-family: 'Dancing Script', cursive;
 }
 
 .blocked-content p {
     font-size: 1.5rem;
+    color: #555;
     margin-bottom: 1rem;
 }
 
@@ -538,16 +557,16 @@ canvas {
     margin-top: 2rem;
     padding: 1rem 2rem;
     font-size: 1.2rem;
-    background: #ef4444;
+    background: #e0218a;
     color: white;
     border: none;
-    border-radius: 8px;
+    border-radius: 50px;
     cursor: pointer;
     transition: background 0.2s;
 }
 
 .blocked-content button:hover {
-    background: #b91c1c;
+    background: #c21875;
 }
 
 /* Mobile Responsiveness */
@@ -560,11 +579,10 @@ canvas {
 
 @media (max-width: 768px) {
     .secure-viewer {
-        height: 100vh; /* Ensure full viewport */
+        height: 100vh;
         width: 100vw;
     }
 
-    /* Top Bar adjustments */
     .top-bar {
         padding: 0.8rem 1rem;
     }
@@ -574,26 +592,22 @@ canvas {
     }
 
     .doc-title {
-        font-size: 0.9rem;
+        font-size: 1.2rem;
         max-width: 70%;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
     }
 
-    /* Toolbar transformation */
     .mobile-menu-toggle {
         display: block;
         position: fixed;
-        bottom: 6rem; /* Above chatbot trigger */
+        bottom: 6rem;
         left: 1rem;
         z-index: 1500;
-        background: #ec4899;
+        background: #e0218a;
         color: white;
         border: none;
         padding: 0.8rem 1.2rem;
         border-radius: 99px;
-        box-shadow: 0 4px 15px rgba(236, 72, 153, 0.4);
+        box-shadow: 0 4px 15px rgba(224, 33, 138, 0.4);
         font-weight: 600;
         cursor: pointer;
     }
@@ -606,11 +620,11 @@ canvas {
         top: auto;
         transform: translateY(0);
         width: 100%;
-        border-radius: 16px 16px 0 0;
+        border-radius: 20px 20px 0 0;
         padding: 1.5rem;
-        background: rgba(255, 255, 255, 0.98);
+        background: white;
         border: none;
-        box-shadow: 0 -10px 40px rgba(0,0,0,0.1);
+        box-shadow: 0 -10px 40px rgba(224, 33, 138, 0.2);
         transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         display: flex;
         flex-direction: column;
@@ -623,7 +637,7 @@ canvas {
     }
 
     .tool-info {
-        display: none; /* Hide vertical text on mobile */
+        display: none;
     }
 
     .tool-group {
@@ -639,18 +653,17 @@ canvas {
         padding: 1rem;
         margin: 0 0.2rem;
         height: auto;
+        border: 2px solid #e0218a; /* Keep pink border */
     }
 
     .mobile-only {
         display: block;
-        background: #f1f5f9;
-        color: #64748b;
-        border-color: #cbd5e1;
+        background: white;
+        color: #e0218a;
     }
 
-    /* PDF Canvas scaling */
     .scroll-container {
-        padding: 1rem 0.5rem 6rem 0.5rem; /* Padding bottom for space */
+        padding: 1rem 0.5rem 6rem 0.5rem;
     }
 
     .page-wrapper {
@@ -664,13 +677,8 @@ canvas {
     }
     
     .textLayer {
-        /* Text layer scaling is tricky on CSS-resized canvas. 
-           For perfect selection on mobile we would need JS resize. 
-           Basic CSS 'transform' might be needed. 
-           For now, let's reset width to match CSS width */
         width: 100% !important;
         height: auto !important;
-        /* Disable text selection potentially if misalignment occurs too much */
     }
 }
 </style>

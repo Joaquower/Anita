@@ -22,8 +22,8 @@ jobs:
         run: npm install
 
       - name: Build Angular
-        # CORRECCIÓN: Se eliminó "-- --configuration production"
-        # Vite ya construye en modo producción automáticamente con este comando.
+        env:
+          VITE_OPENAI_API_KEY: ${{ secrets.VITE_OPENAI_API_KEY }}
         run: npm run build 
 
       - name: Upload build to Neubox

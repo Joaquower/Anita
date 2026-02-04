@@ -12,9 +12,9 @@ import Chatbot from './components/Chatbot.vue'
 body {
   margin: 0;
   padding: 0;
-  background-color: #0f172a; /* Dark premium background */
-  color: #f8fafc;
-  font-family: 'Inter', sans-serif;
+  background-color: #fff0f5; /* Lavender Blush (Light Pink) */
+  color: #4a4a4a;
+  font-family: 'Quicksand', sans-serif;
   overflow-x: hidden;
 }
 
