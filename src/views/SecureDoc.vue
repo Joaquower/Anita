@@ -150,6 +150,10 @@ const handleKeyup = (e) => {
 /**
  * RENDERING LOGIC (Canvas + TextLayer)
  */
+const loadingProgress = ref(0)
+const renderingProgress = ref(0)
+const totalPagesToRender = ref(0)
+
 const renderPage = async (pageNum) => {
   try {
     const page = await pdfDoc.value.getPage(pageNum)
@@ -195,6 +199,9 @@ const renderPage = async (pageNum) => {
             textDivs: []
         }).promise
     }
+    
+    // Update rendering progress
+    renderingProgress.value++
 
   } catch (err) {
     console.error(`Error rendering page ${pageNum}:`, err)
@@ -204,14 +211,29 @@ const renderPage = async (pageNum) => {
 const loadPdf = async () => {
   loading.value = true
   error.value = null
+  loadingProgress.value = 0
+  renderingProgress.value = 0
+  
   try {
     const loadingTask = pdfjsLib.getDocument(pdfUrl)
+    
+    loadingTask.onProgress = (p) => {
+        if (p.total > 0) {
+            loadingProgress.value = Math.round((p.loaded / p.total) * 100)
+        } else {
+            // Fake progress if total unknown
+            if(loadingProgress.value < 90) loadingProgress.value += 5
+        }
+    }
+    
     pdfDoc.value = await loadingTask.promise
+    loadingProgress.value = 100 // Download complete
     
     const numPages = pdfDoc.value.numPages
+    totalPagesToRender.value = numPages
     pages.value = Array.from({ length: numPages }, (_, i) => i + 1)
     
-    loading.value = false
+    // DO NOT turn off loading yet. Wait for render.
     await nextTick()
     
     // Retry finding elements
@@ -223,7 +245,12 @@ const loadPdf = async () => {
     
     for (let i = 1; i <= numPages; i++) {
         await renderPage(i)
+        // Keep loading screen until at least 1st page or few are done?
+        // User asked "hasta que cargue todo". Ideally we wait strictly.
     }
+    
+    loading.value = false // Done!
+    
   } catch (err) {
     console.error('Error loading PDF:', err)
     error.value = "Error cargando documento 😿"
@@ -322,7 +349,27 @@ onUnmounted(() => {
 
     <!-- Scrollable Content -->
     <div class="scroll-container">
-        <div v-if="loading" class="loading-msg">Preparando tus notas... 🎀</div>
+        <div v-if="loading" class="loading-msg">
+            <div class="loading-content">
+                <p>Preparando tus notas... 🎀</p>
+                
+                <!-- Download Progress -->
+                <div class="progress-section">
+                    <div class="progress-bar">
+                        <div class="progress-fill" :style="{ width: loadingProgress + '%' }"></div>
+                    </div>
+                    <span class="progress-text">Descargando: {{ loadingProgress }}%</span>
+                </div>
+
+                <!-- Render Progress (shows only after download complete) -->
+                <div v-if="loadingProgress === 100" class="progress-section">
+                    <div class="progress-bar">
+                        <div class="progress-fill render-fill" :style="{ width: (renderingProgress / totalPagesToRender * 100) + '%' }"></div>
+                    </div>
+                    <span class="progress-text">Renderizando: {{ renderingProgress }} / {{ totalPagesToRender }} páginas</span>
+                </div>
+            </div>
+        </div>
         <div v-else-if="error" class="error-msg">{{ error }}</div>
         
         <div v-else class="pdf-pages">
@@ -680,5 +727,43 @@ canvas {
         width: 100% !important;
         height: auto !important;
     }
+}
+
+.loading-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    width: 300px;
+}
+
+.progress-section {
+    width: 100%;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 10px;
+    background: white;
+    border-radius: 5px;
+    overflow: hidden;
+    border: 1px solid #ffb7c5;
+    margin-bottom: 0.5rem;
+}
+
+.progress-fill {
+    height: 100%;
+    background: #e0218a;
+    transition: width 0.3s ease;
+}
+
+.progress-fill.render-fill {
+    background: #9b59b6; /* Purple for render phase */
+}
+
+.progress-text {
+    font-size: 0.8rem;
+    color: #e0218a;
+    font-weight: bold;
 }
 </style>
