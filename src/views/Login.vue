@@ -8,14 +8,27 @@ const isLoading = ref(false)
 
 const handleLogin = async () => {
   isLoading.value = true
+  // Simulate network delay for effect
   await new Promise(resolve => setTimeout(resolve, 800))
   
-  if (username.value) {
-    localStorage.setItem('authToken', 'mock-jwt-token-123')
-    localStorage.setItem('userEmail', username.value)
-    router.push('/files')
+  try {
+    const response = await fetch('/users.json')
+    const data = await response.json()
+    const user = data.users.find(u => u.username === username.value)
+    
+    if (user && user.access) {
+      localStorage.setItem('authToken', 'mock-jwt-token-123')
+      localStorage.setItem('userEmail', username.value)
+      router.push('/files')
+    } else {
+      alert('Acceso denegado. Usuario no encontrado o sin permisos.')
+    }
+  } catch (error) {
+    console.error('Login error:', error)
+    alert('Error al conectar con la base de datos de usuarios.')
+  } finally {
+    isLoading.value = false
   }
-  isLoading.value = false
 }
 </script>
 

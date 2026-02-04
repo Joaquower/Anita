@@ -1,26 +1,16 @@
 <script setup>
-import { ref, onMounted, shallowRef } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
-const files = shallowRef([])
+const files = ref([])
 const loading = ref(true)
 const userEmail = localStorage.getItem('userEmail')
+const expandedItems = ref({}) // To track which items have details expanded
 
 const fetchFiles = async () => {
     try {
-        // En producción usará el PHP, en local intentamos usar el json si falla el php
-        // Ojo: En local (localhost) el PHP no funcionará a menos que tengas un servidor PHP corriendo.
-        // Pero en tu servidor real sí funcionará.
-        let url = '/list-files.php'
-        
-        // Pequeño truco para desarrollo: si estamos en localhost y falla el PHP, intentamos el json antiguo
-        if (window.location.hostname === 'localhost') {
-             // En local dejamos que falle o podriamos poner un fallback, 
-             // pero por ahora apuntamos directo al script que subiras.
-        }
-
-        const res = await fetch(url)
+        const res = await fetch('/notas.json')
         if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`)
         
         const data = await res.json()
@@ -39,11 +29,30 @@ const fetchFiles = async () => {
 }
 
 const openFile = (file) => {
+    // Construct the path relative to public folder.
+    // Assuming files are in 'notas/' directory.
+    const path = `/notas/${file.filename}`
     router.push({ 
         name: 'view', 
-        query: { src: file.path } 
+        query: { src: path } 
     })
 }
+
+const toggleDetails = (filename) => {
+    expandedItems.value[filename] = !expandedItems.value[filename]
+}
+
+// Group files: Modules (Weeks) and Extras
+const modules = computed(() => {
+    return files.value.filter(f => f.week).sort((a, b) => {
+        // Simple alphanumeric sort might work if format remains consistent "Semana X"
+        return a.week.localeCompare(b.week, undefined, { numeric: true })
+    })
+})
+
+const extras = computed(() => {
+    return files.value.filter(f => !f.week)
+})
 
 onMounted(() => {
     fetchFiles()
@@ -51,156 +60,518 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="explorer-container">
-    <div class="glass-card explorer-box">
-      <div class="header">
-        <h1>Mis Documentos</h1>
-        <div class="user-badge">🌸 {{ userEmail }}</div>
-      </div>
-
-      <div class="file-list">
-        <div v-if="loading" class="loading">Cargando notitas... 🎀</div>
-        
-        <div v-else-if="files.length === 0" class="empty-state">
-            📂 No encontré documentos en la carpeta ./notas
+  <div class="course-container">
+    <div class="content-wrapper">
+      <header class="course-header">
+        <div class="header-content">
+            <h1>Programa de Estudio</h1>
+            <p class="subtitle">Guía de preparación EGEL y apuntes complementarios</p>
         </div>
-
-        <div 
-            v-else 
-            v-for="file in files" 
-            :key="file.name"
-            class="file-item" 
-            @click="openFile(file)"
-        >
-            <span class="file-icon">📄</span>
-            <span class="file-name">{{ file.name }}</span>
-            <span class="file-action">VER</span>
+        <div class="user-badge">
+            <span class="user-icon">🎓</span> 
+            <span class="user-email">{{ userEmail }}</span>
         </div>
-      </div>
+      </header>
       
-      <div class="footer-note">
-        Solo para uso personal 💖
+      <div v-if="loading" class="loading-state">
+        <div class="spinner"></div>
+        <p>Cargando temario...</p>
       </div>
+
+      <div v-else class="course-content">
+        <!-- Main Modules Section -->
+        <section class="modules-section">
+            <h2 class="section-title">Módulos Semanales</h2>
+            
+            <div class="modules-list">
+                <article 
+                    v-for="file in modules" 
+                    :key="file.filename"
+                    class="module-card"
+                >
+                    <div class="module-main">
+                        <div class="module-indicator">
+                            <span class="week-label">{{ file.week || 'Módulo' }}</span>
+                        </div>
+                        
+                        <div class="module-info">
+                            <h3>{{ file.title }}</h3>
+                            <p class="description">{{ file.description }}</p>
+                        </div>
+
+                        <div class="module-actions">
+                            <button @click="openFile(file)" class="btn-primary">
+                                <span class="icon">📂</span> Abrir Apuntes
+                            </button>
+                            <button 
+                                v-if="file.details" 
+                                @click="toggleDetails(file.filename)"
+                                class="btn-secondary"
+                                :class="{ 'active': expandedItems[file.filename] }"
+                            >
+                                {{ expandedItems[file.filename] ? 'Ocultar Detalles' : 'Ver Temario' }}
+                            </button>
+                        </div>
+                    </div>
+
+                    <div 
+                        v-if="file.details && expandedItems[file.filename]" 
+                        class="module-details"
+                    >
+                        <div class="details-content" v-html="file.details"></div>
+                    </div>
+                </article>
+            </div>
+        </section>
+
+        <!-- Extras Section -->
+        <section v-if="extras.length > 0" class="extras-section">
+            <h2 class="section-title">Material Adicional</h2>
+            <div class="extras-grid">
+                <div 
+                    v-for="file in extras" 
+                    :key="file.filename"
+                    class="extra-card"
+                    @click="openFile(file)"
+                >
+                    <div class="extra-icon">📎</div>
+                    <div class="extra-info">
+                        <h4>{{ file.title }}</h4>
+                        <p>{{ file.description }}</p>
+                    </div>
+                    <div class="arrow-icon">→</div>
+                </div>
+            </div>
+        </section>
+      </div>
+
+      <footer class="course-footer">
+        <p>Documentación exclusiva para uso académico 📚</p>
+      </footer>
     </div>
   </div>
 </template>
 
 <style scoped>
-.explorer-container {
-  min-height: 100vh;
-  padding: 2rem;
-  background: linear-gradient(135deg, #fdfbf7 0%, #ffe4e6 100%);
-  display: flex;
-  justify-content: center;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+/* Base Layout */
+.course-container {
+    min-height: 100vh;
+    background-color: #0f172a; /* Slate 900 */
+    color: #e2e8f0; /* Slate 200 */
+    font-family: 'Inter', sans-serif;
+    padding: 2rem;
+    padding-bottom: 6rem; /* Extra space for footer */
 }
 
-.explorer-box {
-  width: 100%;
-  max-width: 800px;
-  display: flex;
-  flex-direction: column;
-  background: rgba(255, 255, 255, 0.9);
-  backdrop-filter: blur(10px);
-  border-radius: 24px;
-  padding: 2rem;
-  box-shadow: 0 10px 40px rgba(255, 182, 193, 0.2);
-  border: 1px solid rgba(255,255,255,0.8);
+.content-wrapper {
+    max-width: 900px; /* Slightly tighter for better reading width */
+    margin: 0 auto;
 }
 
-.header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 2rem;
-  border-bottom: 2px solid #fce7f3;
-  padding-bottom: 1rem;
+/* Header */
+.course-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 4rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid rgba(51, 65, 85, 0.5);
+    position: relative;
 }
 
-.header h1 {
-  color: #d977a5;
-  font-size: 1.8rem;
-  margin: 0;
+.course-header::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    width: 100px;
+    height: 3px;
+    background: linear-gradient(90deg, #ec4899, #8b5cf6);
+}
+
+.header-content h1 {
+    font-size: 3rem;
+    font-weight: 800;
+    margin: 0;
+    line-height: 1.1;
+    background: linear-gradient(to right, #f472b6, #a78bfa); 
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    letter-spacing: -1px;
+}
+
+.subtitle {
+    margin-top: 1rem;
+    font-size: 1.2rem;
+    color: #94a3b8;
+    font-weight: 300;
 }
 
 .user-badge {
-    background: #fff0f5;
-    padding: 0.5rem 1rem;
-    border-radius: 2rem;
-    font-size: 0.9rem;
-    color: #db2777;
-    border: 1px solid #fbcfe8;
-    font-weight: 600;
+    background: rgba(30, 41, 59, 0.6);
+    backdrop-filter: blur(8px);
+    padding: 0.6rem 1.2rem;
+    border-radius: 99px;
+    border: 1px solid rgba(148, 163, 184, 0.2);
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    font-size: 0.95rem;
+    color: #cbd5e1;
+    transition: transform 0.2s;
 }
 
-.file-list {
+.user-badge:hover {
+    transform: translateY(-2px);
+    border-color: #ec4899;
+}
+
+/* Section Titles */
+.section-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #f1f5f9;
+    margin-bottom: 2rem;
+    padding-left: 1rem;
+    border-left: 4px solid #ec4899;
+}
+
+/* Timeline & Modules */
+.modules-section {
+    position: relative;
+}
+
+/* vertical line for timeline */
+.modules-list {
+    display: flex;
+    flex-direction: column;
+    gap: 2.5rem;
+    position: relative;
+    padding-left: 2rem;
+}
+
+.modules-list::before {
+    content: '';
+    position: absolute;
+    left: 0px;
+    top: 20px;
+    bottom: 20px;
+    width: 2px;
+    background: linear-gradient(to bottom, #ec4899, #6366f1 80%, rgba(99, 102, 241, 0));
+    opacity: 0.3;
+}
+
+.module-card {
+    background: #1e293b; 
+    border-radius: 20px;
+    border: 1px solid rgba(51, 65, 85, 0.5);
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+}
+
+/* Dot on timeline */
+.module-card::before {
+    content: '';
+    position: absolute;
+    left: -2.45rem; /* Align with timeline line */
+    top: 2rem;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: #0f172a;
+    border: 3px solid #ec4899;
+    z-index: 10;
+}
+
+.module-card:hover {
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+    border-color: #6366f1;
+    transform: translateY(-4px);
+}
+
+.module-card:hover::before {
+    background: #ec4899;
+    box-shadow: 0 0 15px #ec4899;
+}
+
+.module-main {
+    display: flex;
+    padding: 2rem;
+    gap: 2rem;
+    align-items: flex-start;
+}
+
+.module-indicator {
+    flex-shrink: 0;
+}
+
+.week-label {
+    background: rgba(99, 102, 241, 0.1);
+    color: #a5b4fc;
+    padding: 0.4rem 1rem;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border: 1px solid rgba(99, 102, 241, 0.2);
+}
+
+.module-info {
+    flex: 1;
+}
+
+.module-info h3 {
+    margin: 0 0 0.8rem 0;
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #f8fafc;
+    letter-spacing: -0.02em;
+}
+
+.description {
+    margin: 0;
+    color: #94a3b8;
+    line-height: 1.7;
+    font-size: 1rem;
+}
+
+.module-actions {
     display: flex;
     flex-direction: column;
     gap: 1rem;
+    min-width: 160px;
 }
 
-.file-item {
-    background: #fff;
-    padding: 1.5rem;
-    border-radius: 16px;
+.btn-primary {
+    background: linear-gradient(135deg, #ec4899 0%, #db2777 100%);
+    color: white;
+    border: none;
+    padding: 0.9rem 1.2rem;
+    border-radius: 12px;
+    font-weight: 600;
+    cursor: pointer;
     display: flex;
     align-items: center;
-    border: 1px solid #f3f4f6;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+    justify-content: center;
+    gap: 0.6rem;
+    transition: all 0.2s;
+    box-shadow: 0 4px 12px rgba(236, 72, 153, 0.2);
 }
 
-.file-item:hover {
-    background: #fffbfc;
-    border-color: #fbcfe8;
-    transform: translateX(5px);
-    box-shadow: 0 4px 12px rgba(251, 207, 232, 0.4);
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(236, 72, 153, 0.4);
+    filter: brightness(1.1);
 }
 
-.file-icon {
-    font-size: 1.5rem;
-    margin-right: 1rem;
-    filter: drop-shadow(0 2px 2px rgba(0,0,0,0.1));
-}
-
-.file-name {
-    flex: 1;
-    font-size: 1.1rem;
-    color: #4b5563;
+.btn-secondary {
+    background: transparent;
+    border: 1px solid #475569;
+    color: #cbd5e1;
+    padding: 0.8rem 1rem;
+    border-radius: 12px;
     font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 0.95rem;
+    text-align: center;
 }
 
-.file-action {
-    font-size: 0.75rem;
-    color: #9ca3af;
-    letter-spacing: 1px;
-    font-weight: 700;
+.btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: #cbd5e1;
+}
+
+.btn-secondary.active {
+    background: rgba(236, 72, 153, 0.1);
+    color: #f472b6;
+    border-color: #f472b6;
+}
+
+/* Module Details */
+.module-details {
+    background: rgba(15, 23, 42, 0.5); /* Darker background for contrast */
+    border-top: 1px solid rgba(51, 65, 85, 0.5);
+    padding: 0;
+    animation: slideDown 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    overflow: hidden;
+}
+
+.details-content {
+    padding: 2rem 2rem 2rem 6.5rem; /* Align text with title above */
+    font-size: 1rem;
+    color: #cbd5e1;
+}
+
+.details-content :deep(h3) {
+    color: #f472b6;
+    font-size: 1.1rem;
     text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-top: 0;
+    margin-bottom: 1rem;
 }
 
-.file-item:hover .file-action {
-    color: #db2777;
+.details-content :deep(ul) {
+    padding-left: 1.2rem;
+    margin: 0;
+    list-style-type: none; /* Custom bullets */
 }
 
-.empty-state {
-    text-align: center;
-    padding: 3rem;
-    color: #9ca3af;
+.details-content :deep(li) {
+    margin-bottom: 0.8rem;
+    line-height: 1.6;
+    position: relative;
+    padding-left: 0.5rem;
 }
 
-.footer-note {
-    margin-top: 3rem;
-    text-align: center;
-    color: #d977a5;
-    font-size: 0.85rem;
-    opacity: 0.8;
+.details-content :deep(li)::before {
+    content: '•';
+    color: #ec4899;
+    font-weight: bold;
+    display: inline-block;
+    width: 1em;
+    margin-left: -1em;
 }
 
-.loading {
-    text-align: center;
-    padding: 2rem;
-    color: #d977a5;
+.details-content :deep(strong) {
+    color: #fff;
     font-weight: 600;
 }
+
+/* Extras Section */
+.extras-section {
+    margin-top: 6rem;
+    padding-top: 3rem;
+    border-top: 1px dashed #334155;
+}
+
+.extras-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 2rem;
+}
+
+.extra-card {
+    background: rgba(30, 41, 59, 0.4);
+    border: 1px solid rgba(51, 65, 85, 0.5);
+    border-radius: 16px;
+    padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1.2rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.extra-card:hover {
+    background: rgba(30, 41, 59, 0.8);
+    border-color: #6366f1;
+    transform: translateY(-4px);
+}
+
+.extra-icon {
+    font-size: 2rem;
+    background: rgba(148, 163, 184, 0.1);
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+}
+
+.extra-info h4 {
+    margin: 0 0 0.3rem 0;
+    font-size: 1.05rem;
+    color: #f1f5f9;
+}
+
+.extra-info p {
+    margin: 0;
+    font-size: 0.85rem;
+    color: #64748b;
+}
+
+/* Footer */
+.course-footer {
+    margin-top: 6rem;
+    text-align: center;
+    padding: 2rem;
+    color: #475569;
+    font-size: 0.9rem;
+    letter-spacing: 1px;
+}
+
+.loading-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 400px;
+    color: #94a3b8;
+}
+
+.spinner {
+    width: 50px;
+    height: 50px;
+    border: 4px solid rgba(99, 102, 241, 0.1);
+    border-top-color: #ec4899;
+    border-radius: 50%;
+    margin-bottom: 1.5rem;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        max-height: 0;
+    }
+    to {
+        opacity: 1;
+        max-height: 1000px; /* Arbitrary large number */
+    }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .modules-list {
+        padding-left: 1.5rem;  /* Reduce spacing */
+    }
+    
+    .module-card::before {
+        left: -1.9rem; /* Re-align dot */
+    }
+
+    .module-main {
+        flex-direction: column;
+        padding: 1.5rem;
+    }
+    
+    .module-actions {
+        width: 100%;
+        flex-direction: row;
+        margin-top: 1rem;
+    }
+
+    .btn-primary, .btn-secondary {
+        flex: 1;
+    }
+
+    .details-content {
+        padding: 1.5rem; /* Remove indentation on mobile */
+    }
+    
+    .course-header {
+        flex-direction: column;
+        gap: 1rem;
+    }
+}
 </style>
+

@@ -1,8 +1,10 @@
 <script setup>
+import Chatbot from './components/Chatbot.vue'
 </script>
 
 <template>
   <RouterView />
+  <Chatbot />
 </template>
 
 <style>

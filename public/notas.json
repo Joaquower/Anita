@@ -1,1 +1,77 @@
-[]
+[
+    {
+        "filename": "EGEL S1 ODONTOPEDIATRÍA.pdf",
+        "title": "Odontopediatría Clínica y Ortodoncia Interceptiva",
+        "week": "EGEL S1",
+        "description": "Domina el diagnóstico y tratamiento en pacientes pediátricos con esta guía visual y esquemática. Ideal para la preparación del EGEL, estos apuntes condensan desde la clasificación de caries y estadios de desarrollo, hasta protocolos de pulpotomía y una guía detallada de aparatología ortopédica.",
+        "details": "<h3>¿Qué encontrarás en este resumen?</h3><p>Estos apuntes están organizados en tablas, diagramas y casos clínicos para facilitar el estudio rápido y efectivo. El contenido incluye:</p><ul><li><strong>Diagnóstico y Clasificación:</strong> Clasificaciones de Angle, Sistemas de clasificación de caries (ICDAS, Black), Índices de placa.</li><li><strong>Desarrollo Dental:</strong> Estadios de Nolla, Cronología de erupción.</li><li><strong>Terapia Pulpar en Dentición Temporal:</strong> Guía de decisión clínica, Protocolos de Pulpotomía y Pulpectomía.</li><li><strong>Ortodoncia Preventiva y Manejo de Espacio:</strong> Mantenedores de Espacio, Hábitos Bucales.</li><li><strong>Aparatología Ortopédica y Ortodoncia:</strong> Fichas técnicas de aparatos (Hawley, Schwartz, Hyrax, etc).</li><li><strong>Aplicación Práctica:</strong> Casos Clínicos resueltos, Manejo básico de trastornos de la ATM.</li></ul>"
+    },
+    {
+        "filename": "EGEL S2 FARMA, SINDROMES Y BIOMATERIALES.pdf",
+        "title": "Farmacología, Síndromes y Biomateriales Dentales",
+        "week": "EGEL S2",
+        "description": "Un compendio integral que vincula la farmacología clínica con los biomateriales más utilizados. Aprende a seleccionar el medicamento correcto y a manipular materiales dentales con precisión científica.",
+        "details": "<h3>Contenido Clave:</h3><ul><li><strong>Farmacología Odontológica:</strong> Analgésicos, Antibióticos y Antiinflamatorios (AINEs y Esteroides). Dosis ponderales y contraindicaciones clave.</li><li><strong>Síndromes Clínicos:</strong> Identificación de manifestaciones orales en síndromes sistémicos más comunes en el examen EGEL (Down, Treacher-Collins, Pierre Robin, etc.).</li><li><strong>Biomateriales Dentales:</strong> Propiedades físico-químicas, clasificación de adhesivos, resinas compuestas, cementos (Ionómero de Vidrio, Fosfato de Zinc) y materiales de impresión.</li></ul>"
+    },
+    {
+        "filename": "Egel S3 MURILLO.pdf",
+        "title": "Patología Bucal y Medicina Oral (Módulo Murillo)",
+        "week": "EGEL S3",
+        "description": "Enfoque profundo en el diagnóstico de lesiones de la mucosa oral y patologías óseas. Este módulo cubre las claves para diferenciar lesiones benignas de malignas.",
+        "details": "<h3>Puntos destacados:</h3><ul><li><strong>Lesiones Elementales:</strong> Clasificación y descripción clínica de manchas, pápulas, nódulos, vesículas y úlceras.</li><li><strong>Quistes y Tumores Odontogénicos:</strong> Características radiográficas y clínicas de quistes foliculares, queratoquistes y ameloblastomas.</li><li><strong>Medicina Oral:</strong> Manejo odontológico de pacientes con compromiso sistémico (diabetes, hipertensión, cardiopatías).</li></ul>"
+    },
+    {
+        "filename": " EGEL S4 PRÓTESIS.pdf",
+        "title": "Rehabilitación Oral: Prótesis Fija y Removible",
+        "week": "EGEL S4",
+        "description": "Desde la biomecánica fundamental hasta el diseño de prótesis complejas. Una guía esencial para la restauración funcional y estética del paciente edéntulo parcial y total.",
+        "details": "<h3>Temas Principales:</h3><ul><li><strong>Prótesis Fija:</strong> Principios de tallado, línea de terminación, ley de Ante y selección de pilares.</li><li><strong>Prótesis Parcial Removible (PPR):</strong> Diseño de retenedores, conectores mayores y menores, y análisis del paralelómetro.</li><li><strong>Prótesis Total:</strong> Toma de impresiones anatómicas y funcionales, dimensión vertical y relación céntrica.</li></ul>"
+    },
+    {
+        "filename": "EGEL S5  ENDODONCIA.pdf",
+        "title": "Endodoncia: Diagnóstico y Terapia de Conductos",
+        "week": "EGEL S5",
+        "description": "Domina la triada endodóntica: Diagnóstico, Instrumentación y Obturación. Todo lo necesario para salvar órganos dentales con patología pulpar o periapical.",
+        "details": "<h3>Lo que aprenderás:</h3><ul><li><strong>Diagnóstico Pulpar y Periapical:</strong> Clasificación actualizada de la AAE (Asociación Americana de Endodoncia).</li><li><strong>Anatomía Dental Interna:</strong> Conductos accesorios, deltas apicales y variaciones anatómicas (Conducto en C).</li><li><strong>Instrumentación:</strong> Técnicas manuales (Step-Back) y rotatorias (Crown-Down). Irrigación y medicación intraconducto.</li></ul>"
+    },
+    {
+        "filename": "EGEL S6 SALUD PÚBLICA.pdf",
+        "title": "Fundamentos de Salud Pública Bucal",
+        "week": "EGEL S6",
+        "description": "La base teórica de la odontología comunitaria. Entiende cómo se gestionan y previenen las enfermedades orales a nivel poblacional.",
+        "details": "<h3>Resumen del Módulo:</h3><ul><li><strong>Historia Natural de la Enfermedad:</strong> Periodos prepatogénico y patogénico. Tríada ecológica.</li><li><strong>Epidemiología Básica:</strong> Conceptos de prevalencia, incidencia, morbilidad y mortalidad.</li><li><strong>Determinantes de la Salud:</strong> Factores sociales, económicos y ambientales que influyen en la salud bucal.</li></ul>"
+    },
+    {
+        "filename": "EGEL S7 SALUD P. Y MURILLO.pdf",
+        "title": "Salud Pública Avanzada e Investigación",
+        "week": "EGEL S7",
+        "description": "Integración de conceptos de investigación clínica y  normatividad aplicada a la práctica pública y privada.",
+        "details": "<h3>Contenido Detallado:</h3><ul><li><strong>Metodología de la Investigación:</strong> Tipos de estudios epidemiológicos (transversales, longitudinales, cohortes y casos-controles).</li><li><strong>Bioestadística Básica:</strong> Medidas de tendencia central y dispersión aplicadas a estudios dentales.</li><li><strong>Vigilancia Epidemiológica:</strong> Sistemas de reporte y control de enfermedades bucales en México.</li></ul>"
+    },
+    {
+        "filename": "EGEL S8 NIVELES DE PREVENCIÓN Y NORMAS.pdf",
+        "title": "Niveles de Prevención y Normatividad Oficial (NOM)",
+        "week": "EGEL S8",
+        "description": "Un repaso crítico sobre las leyes que rigen la práctica odontológica en México y las estrategias preventivas según Leavell y Clark.",
+        "details": "<h3>Normas Indispensables:</h3><ul><li><strong>NOM-013-SSA2-2015:</strong> Para la prevención y control de enfermedades bucales.</li><li><strong>NOM-004-SSA3-2012:</strong> Del expediente clínico.</li><li><strong>Niveles de Prevención:</strong> Primaria (Promoción y Protección), Secundaria (Diagnóstico y Tratamiento) y Terciaria (Rehabilitación).</li></ul>"
+    },
+    {
+        "filename": "EGEL S9 SALUD PUBLICA, INDICES Y TECNICAS CEPILLADO.pdf",
+        "title": "Índices Epidemiológicos y Educación para la Salud",
+        "week": "EGEL S9",
+        "description": "Herramientas prácticas para medir la salud enfermedad en poblaciones y técnicas educativas para el control de placa bacteriana.",
+        "details": "<h3>Herramientas Clave:</h3><ul><li><strong>Índices Epidemiológicos:</strong> CPO-D, ceo-d, IHOS (Índice de Higiene Oral Simplificado) e índice de Dean (Fluorosis).</li><li><strong>Técnicas de Cepillado:</strong> Bass, Stillman, Charters y Fones. Indicaciones específicas para cada paciente.</li><li><strong>Flúor:</strong> Mecanismo de acción, toxicidad y dosis terapéuticas.</li></ul>"
+    },
+    {
+        "filename": "Biomateriales dentales extra r..pdf",
+        "title": "Apuntes Extra: Biomateriales Dentales",
+        "description": "Material complementario de refuerzo sobre propiedades y manipulación avanzada de materiales dentales.",
+        "details": "<p>Lectura recomendada para profundizar en la química y física de los materiales restauradores modernos.</p>"
+    },
+    {
+        "filename": "SINDROMES EGEL - Documentos de Google.pdf",
+        "title": "Documentación Adicional: Síndromes",
+        "description": "Fichas rápidas y documentos de Google recopilados sobre síndromes genéticos con repercusión craneofacial.",
+        "details": "<p>Recurso útil para repaso rápido de características fenotípicas antes del examen.</p>"
+    }
+]
