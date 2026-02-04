@@ -400,6 +400,7 @@
         animation-delay: -0.16s;
     }
 
+
     @keyframes bounce {
 
         0%,
@@ -410,6 +411,32 @@
 
         40% {
             transform: scale(1);
+        }
+    }
+
+    @media (max-width: 768px) {
+        .chat-window {
+            width: 100vw;
+            height: 100vh;
+            bottom: 0;
+            right: 0;
+            border-radius: 0;
+            border: none;
+        }
+
+        .chatbot-wrapper {
+            bottom: 1.5rem;
+            right: 1.5rem;
+        }
+
+        /* When chat is open, hide the toggle or move it */
+        .chat-window~.chat-toggle {
+            display: none;
+        }
+
+        /* Ensure smooth scrolling on mobile */
+        .chat-messages {
+            -webkit-overflow-scrolling: touch;
         }
     }
 </style>

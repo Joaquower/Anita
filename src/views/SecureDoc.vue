@@ -54,6 +54,9 @@ const screenshotAttempts = ref(0)
 const isBlocked = ref(false)
 const MAX_ATTEMPTS = 3
 
+// Mobile State
+const showMobileMenu = ref(false)
+
 /**
  * TOOLS LOGIC
  */
@@ -274,8 +277,9 @@ onUnmounted(() => {
     <!-- The user wanted a strip that covers PART to force partial screenshots -->
     <ProtectionStrip v-if="!isBlocked" />
     
-    <!-- Study Toolbar -->
-    <div class="study-toolbar glass-panel">
+    <!-- Study Toolbar (Desktop & Mobile Adaptado) -->
+    <!-- On mobile, this will be a bottom bar or overlay -->
+    <div class="study-toolbar glass-panel" :class="{ 'mobile-hidden': !showMobileMenu }">
         <div class="tool-group">
             <button class="tool-btn" @click="addNote" title="Agregar Nota">
                 📝 Nota
@@ -285,9 +289,18 @@ onUnmounted(() => {
                     🍅 {{ String(timerMinutes).padStart(2, '0') }}:{{ String(timerSeconds).padStart(2, '0') }}
                 </button>
             </div>
+            <!-- Extra mobile-only Close button for menu -->
+            <button class="tool-btn mobile-only" @click="showMobileMenu = false">
+                🔽 Ocultar
+            </button>
         </div>
         <div class="tool-info">Modo Estudio 🎓</div>
     </div>
+
+    <!-- Mobile Menu Toggle Button (Floating) -->
+    <button class="mobile-menu-toggle" @click="showMobileMenu = !showMobileMenu" v-if="!showMobileMenu">
+        🛠️ Herramientas
+    </button>
 
     <!-- Sticky Notes Overlay -->
     <div class="notes-layer">
@@ -304,7 +317,7 @@ onUnmounted(() => {
     <!-- Navigation -->
     <div class="top-bar">
         <button @click="router.push('/files')" class="back-btn">
-            ← Mis Documentos
+            ← <span class="desktop-text">Mis Documentos</span>
         </button>
         <span class="doc-title">Vista de Estudio</span>
     </div>
@@ -535,5 +548,129 @@ canvas {
 
 .blocked-content button:hover {
     background: #b91c1c;
+}
+
+/* Mobile Responsiveness */
+.mobile-menu-toggle {
+    display: none;
+}
+.mobile-only {
+    display: none;
+}
+
+@media (max-width: 768px) {
+    .secure-viewer {
+        height: 100vh; /* Ensure full viewport */
+        width: 100vw;
+    }
+
+    /* Top Bar adjustments */
+    .top-bar {
+        padding: 0.8rem 1rem;
+    }
+    
+    .desktop-text {
+        display: none;
+    }
+
+    .doc-title {
+        font-size: 0.9rem;
+        max-width: 70%;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    /* Toolbar transformation */
+    .mobile-menu-toggle {
+        display: block;
+        position: fixed;
+        bottom: 6rem; /* Above chatbot trigger */
+        left: 1rem;
+        z-index: 1500;
+        background: #ec4899;
+        color: white;
+        border: none;
+        padding: 0.8rem 1.2rem;
+        border-radius: 99px;
+        box-shadow: 0 4px 15px rgba(236, 72, 153, 0.4);
+        font-weight: 600;
+        cursor: pointer;
+    }
+
+    .study-toolbar {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        top: auto;
+        transform: translateY(0);
+        width: 100%;
+        border-radius: 16px 16px 0 0;
+        padding: 1.5rem;
+        background: rgba(255, 255, 255, 0.98);
+        border: none;
+        box-shadow: 0 -10px 40px rgba(0,0,0,0.1);
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1.5rem;
+    }
+
+    .study-toolbar.mobile-hidden {
+        transform: translateY(110%);
+    }
+
+    .tool-info {
+        display: none; /* Hide vertical text on mobile */
+    }
+
+    .tool-group {
+        flex-direction: row;
+        width: 100%;
+        justify-content: space-around;
+        align-items: center;
+    }
+
+    .tool-btn {
+        flex: 1;
+        text-align: center;
+        padding: 1rem;
+        margin: 0 0.2rem;
+        height: auto;
+    }
+
+    .mobile-only {
+        display: block;
+        background: #f1f5f9;
+        color: #64748b;
+        border-color: #cbd5e1;
+    }
+
+    /* PDF Canvas scaling */
+    .scroll-container {
+        padding: 1rem 0.5rem 6rem 0.5rem; /* Padding bottom for space */
+    }
+
+    .page-wrapper {
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        max-width: 100%;
+    }
+    
+    canvas {
+        width: 100% !important;
+        height: auto !important;
+    }
+    
+    .textLayer {
+        /* Text layer scaling is tricky on CSS-resized canvas. 
+           For perfect selection on mobile we would need JS resize. 
+           Basic CSS 'transform' might be needed. 
+           For now, let's reset width to match CSS width */
+        width: 100% !important;
+        height: auto !important;
+        /* Disable text selection potentially if misalignment occurs too much */
+    }
 }
 </style>

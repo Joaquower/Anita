@@ -541,36 +541,88 @@ onMounted(() => {
 
 /* Responsive */
 @media (max-width: 768px) {
+    .course-container {
+        padding: 1rem;
+        padding-bottom: 5rem;
+    }
+
+    .content-wrapper {
+        width: 100%;
+    }
+
+    .course-header {
+        flex-direction: column;
+        gap: 1.5rem;
+        margin-bottom: 2.5rem;
+        align-items: stretch;
+    }
+
+    .header-content h1 {
+        font-size: 2.2rem; /* Smaller title on mobile */
+    }
+
+    .user-badge {
+        align-self: flex-start;
+        font-size: 0.85rem;
+    }
+
+    /* Timeline Adjustments */
     .modules-list {
-        padding-left: 1.5rem;  /* Reduce spacing */
+        padding-left: 1.5rem;  
+        gap: 2rem;
+    }
+
+    .modules-list::before {
+        left: 6px; /* Adjust line position */
     }
     
     .module-card::before {
-        left: -1.9rem; /* Re-align dot */
+        left: -1.85rem; /* Re-align dot */
+        width: 12px;
+        height: 12px;
+        top: 1.8rem;
+    }
+
+    .module-card {
+        border-radius: 16px;
     }
 
     .module-main {
         flex-direction: column;
-        padding: 1.5rem;
+        padding: 1.25rem;
+        gap: 1rem;
     }
-    
+
+    .module-info h3 {
+        font-size: 1.2rem; /* Readable title */
+    }
+
+    /* Make buttons full width and touch-friendly */
     .module-actions {
         width: 100%;
-        flex-direction: row;
-        margin-top: 1rem;
+        flex-direction: column; /* Stack buttons vertically for easier tapping */
+        margin-top: 0.5rem;
+        gap: 0.8rem;
     }
 
     .btn-primary, .btn-secondary {
-        flex: 1;
+        width: 100%;
+        padding: 1rem; /* Larger touch target */
+        font-size: 1rem;
+    }
+
+    .module-details {
+        padding: 1rem;
     }
 
     .details-content {
-        padding: 1.5rem; /* Remove indentation on mobile */
+        padding: 0.5rem;
+        padding-left: 1rem;
     }
-    
-    .course-header {
-        flex-direction: column;
-        gap: 1rem;
+
+    /* Extras Grid - 1 column on mobile */
+    .extras-grid {
+        grid-template-columns: 1fr;
     }
 }
 </style>
