@@ -548,7 +548,7 @@ onUnmounted(() => {
 
 canvas {
     display: block;
-    background-color: white;
+    /* background-color: white;  <-- Removed to avoid potential blanking if PDF renders transparently */
 }
 
 /* ... existing block & watermark CSS ... */
