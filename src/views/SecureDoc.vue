@@ -223,11 +223,12 @@ const loadPdf = async () => {
   try {
     const loadingTask = pdfjsLib.getDocument({
         url: pdfUrl,
-        cMapUrl: 'https://cdn.jsdelivr.net/npm/pdfjs-dist@5.4.530/cmaps/',
+        cMapUrl: import.meta.env.BASE_URL + 'cmaps/',
         cMapPacked: true,
-        // Disable stream if that's causing range request issues
-        disableRange: true, 
-        disableStream: true
+        standardFontDataUrl: import.meta.env.BASE_URL + 'standard_fonts/',
+        // Enable range requests for faster loading of large files
+        disableRange: false,
+        disableStream: false
     })
     
     loadingTask.onProgress = (p) => {
