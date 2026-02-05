@@ -6,4 +6,12 @@ export default defineConfig({
   plugins: [
     vue(),
   ],
+  build: {
+    target: 'esnext'
+  },
+  optimizeDeps: {
+    esbuildOptions: {
+      target: 'esnext'
+    }
+  }
 })

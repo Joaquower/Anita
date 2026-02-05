@@ -2,6 +2,7 @@
 import { ref, onMounted, onUnmounted, shallowRef, nextTick } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import * as pdfjsLib from 'pdfjs-dist'
+import pdfWorker from 'pdfjs-dist/build/pdf.worker.min.mjs?url'
 import QRCode from 'qrcode'
 import { useWindowFocus } from '@vueuse/core'
 
@@ -13,7 +14,7 @@ import ProtectionStrip from '../components/ProtectionStrip.vue'
 /**
  * CONFIGURATION & STATE
  */
-pdfjsLib.GlobalWorkerOptions.workerSrc = import.meta.env.BASE_URL + 'pdf.worker.min.js'
+pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorker
 // Force disable offscreen canvas to avoid potential structured clone errors or environment support issues
 // This might fix "Invalid PDF structure" if it comes from worker message passing failures.
 // Actually, this option is usually passed to getDocument, not global options, but let's check correct usage.
