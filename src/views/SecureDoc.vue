@@ -772,6 +772,7 @@ canvas {
     }
 }
 
+
 .loading-content {
     display: flex;
     flex-direction: column;
