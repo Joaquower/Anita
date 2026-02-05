@@ -415,28 +415,43 @@
     }
 
     @media (max-width: 768px) {
-        .chat-window {
-            width: 100vw;
-            height: 100vh;
-            bottom: 0;
-            right: 0;
-            border-radius: 0;
-            border: none;
-        }
-
         .chatbot-wrapper {
-            bottom: 1.5rem;
-            right: 1.5rem;
+            /* Reset wrapper positioning context for mobile if needed, 
+               but moving the window to fixed is cleaner */
+            z-index: 10000;
+            /* Ensure high z-index on mobile */
         }
 
-        /* When chat is open, hide the toggle or move it */
-        .chat-window~.chat-toggle {
-            display: none;
+        .chat-window {
+            position: fixed;
+            /* Fix to viewport, not wrapper */
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            background: #0f172a;
+            /* Solid background for mobile */
         }
 
-        /* Ensure smooth scrolling on mobile */
-        .chat-messages {
-            -webkit-overflow-scrolling: touch;
+        .chat-header {
+            padding-top: max(1rem, env(safe-area-inset-top));
+            /* Safe area for notch */
         }
+
+        .chat-toggle {
+            /* Adjust toggle button position if needed, or hide it when open */
+            z-index: 10001;
+        }
+
+        /* Hide toggle when open is handled by v-if on window usually? 
+           The template shows toggle button is outside chat window. 
+           But if full screen, we replace toggle with 'X' in header. 
+           Let's hide the floating toggle when chat is open on mobile. */
     }
 </style>
