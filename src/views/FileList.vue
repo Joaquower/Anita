@@ -10,7 +10,7 @@ const expandedItems = ref({}) // To track which items have details expanded
 
 const fetchFiles = async () => {
     try {
-        const res = await fetch('/notas.json')
+        const res = await fetch(import.meta.env.BASE_URL + 'notas.json')
         if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`)
         
         const data = await res.json()
@@ -31,7 +31,7 @@ const fetchFiles = async () => {
 const openFile = (file) => {
     // Construct the path relative to public folder.
     // Assuming files are in 'notas/' directory.
-    const path = `/notas/${file.filename}`
+    const path = import.meta.env.BASE_URL + 'notas/' + file.filename
     router.push({ 
         name: 'view', 
         query: { src: path } 

@@ -13,7 +13,7 @@ import ProtectionStrip from '../components/ProtectionStrip.vue'
 /**
  * CONFIGURATION & STATE
  */
-pdfjsLib.GlobalWorkerOptions.workerSrc = '/pdf.worker.min.mjs'
+pdfjsLib.GlobalWorkerOptions.workerSrc = import.meta.env.BASE_URL + 'pdf.worker.min.js'
 
 const router = useRouter()
 const route = useRoute()
