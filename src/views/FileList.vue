@@ -30,12 +30,15 @@ const fetchFiles = async () => {
 
 const openFile = (file) => {
     // Construct the path relative to public folder.
-    // Assuming files are in 'notas/' directory.
     const path = import.meta.env.BASE_URL + 'notas/' + file.filename
-    router.push({ 
-        name: 'view', 
-        query: { src: path } 
-    })
+    
+    // Create a temporary link to trigger download
+    const link = document.createElement('a')
+    link.href = path
+    link.download = file.filename // Force download with original filename
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
 }
 
 const toggleDetails = (filename) => {
