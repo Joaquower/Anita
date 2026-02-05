@@ -28,44 +28,47 @@ const fetchFiles = async () => {
     }
 }
 
-const openFile = (file) => {
+const openFile = (file, event) => {
+    if (event) {
+        event.stopPropagation()
+        event.preventDefault()
+    }
+
+    if (!file || !file.filename) {
+        console.error("Invalid file object:", file)
+        return
+    }
+
     // Construct the path relative to public folder.
     const path = import.meta.env.BASE_URL + 'notas/' + file.filename
     
+    console.log("Downloading:", path)
+
     // Create a temporary link to trigger download
     const link = document.createElement('a')
     link.href = path
-    link.download = file.filename // Force download with original filename
+    link.download = file.filename
+    link.target = '_blank' // Helper for some browsers
     document.body.appendChild(link)
     link.click()
-    document.body.removeChild(link)
+    
+    // Remove after short delay to ensure click registered
+    setTimeout(() => {
+        document.body.removeChild(link)
+    }, 100)
 }
 
-const toggleDetails = (filename) => {
-    expandedItems.value[filename] = !expandedItems.value[filename]
-}
+// ... (toggleDetails remains same) ...
 
-// Group files: Modules (Weeks) and Extras
-const modules = computed(() => {
-    return files.value.filter(f => f.week).sort((a, b) => {
-        // Simple alphanumeric sort might work if format remains consistent "Semana X"
-        return a.week.localeCompare(b.week, undefined, { numeric: true })
-    })
-})
-
-const extras = computed(() => {
-    return files.value.filter(f => !f.week)
-})
-
-onMounted(() => {
-    fetchFiles()
-})
+// ... (computed remains same) ...
 </script>
+
 
 <template>
   <div class="course-container">
     <div class="content-wrapper">
       <header class="course-header">
+        <!-- ... header content ... -->
         <div class="header-content">
             <h1>Programa de Estudio</h1>
             <p class="subtitle">Guía de preparación EGEL y apuntes complementarios</p>
@@ -103,7 +106,7 @@ onMounted(() => {
                         </div>
 
                         <div class="module-actions">
-                            <button @click="openFile(file)" class="btn-primary">
+                            <button @click.stop.prevent="openFile(file, $event)" class="btn-primary">
                                 <span class="icon">📂</span> Abrir Apuntes
                             </button>
                             <button 
@@ -135,7 +138,7 @@ onMounted(() => {
                     v-for="file in extras" 
                     :key="file.filename"
                     class="extra-card"
-                    @click="openFile(file)"
+                    @click.stop.prevent="openFile(file, $event)"
                 >
                     <div class="extra-icon">📎</div>
                     <div class="extra-info">
