@@ -222,7 +222,7 @@ const loadPdf = async () => {
   try {
     const loadingTask = pdfjsLib.getDocument({
         url: pdfUrl,
-        cMapUrl: 'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.4.120/cmaps/',
+        cMapUrl: 'https://cdn.jsdelivr.net/npm/pdfjs-dist@5.4.530/cmaps/',
         cMapPacked: true,
         // Disable stream if that's causing range request issues
         disableRange: true, 
