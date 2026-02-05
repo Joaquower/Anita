@@ -14,6 +14,10 @@ import ProtectionStrip from '../components/ProtectionStrip.vue'
  * CONFIGURATION & STATE
  */
 pdfjsLib.GlobalWorkerOptions.workerSrc = import.meta.env.BASE_URL + 'pdf.worker.min.js'
+// Force disable offscreen canvas to avoid potential structured clone errors or environment support issues
+// This might fix "Invalid PDF structure" if it comes from worker message passing failures.
+// Actually, this option is usually passed to getDocument, not global options, but let's check correct usage.
+// Correction: It goes into getDocument params usually.
 
 const router = useRouter()
 const route = useRoute()
@@ -215,7 +219,14 @@ const loadPdf = async () => {
   renderingProgress.value = 0
   
   try {
-    const loadingTask = pdfjsLib.getDocument(pdfUrl)
+    const loadingTask = pdfjsLib.getDocument({
+        url: pdfUrl,
+        cMapUrl: 'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.4.120/cmaps/',
+        cMapPacked: true,
+        // Disable stream if that's causing range request issues
+        disableRange: true, 
+        disableStream: true
+    })
     
     loadingTask.onProgress = (p) => {
         if (p.total > 0) {
