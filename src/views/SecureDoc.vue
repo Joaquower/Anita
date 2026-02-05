@@ -35,6 +35,7 @@ const scale = ref(1.5)
 // State
 const loading = ref(true)
 const error = ref(null)
+const useFallback = ref(false)
 
 // Study Tools State
 const notes = ref([])
@@ -264,7 +265,9 @@ const loadPdf = async () => {
     
   } catch (err) {
     console.error('Error loading PDF:', err)
-    error.value = "Error cargando documento 😿"
+    // Switch to fallback iframe mode immediately
+    useFallback.value = true
+    error.value = "Abriendo visor nativo..."
     loading.value = false
   }
 }
@@ -358,48 +361,44 @@ onUnmounted(() => {
         <span class="doc-title">Vista de Estudio</span>
     </div>
 
-    <!-- Scrollable Content -->
-    <div class="scroll-container">
+    <!-- Fallback Viewer (Iframe) -> Activates on Error -->
+    <div v-if="useFallback" class="fallback-container">
+        <div class="fallback-header">
+            <p>⚠️ El visor avanzado falló. Usando visor nativo.</p>
+            <p class="debug-url">Intentando cargar: {{ pdfUrl }}</p>
+        </div>
+        <iframe :src="pdfUrl" class="native-viewer"></iframe>
+    </div>
+
+    <!-- Scrollable Content (Advanced Viewer) -->
+    <div v-else class="scroll-container">
+        <!-- Loading State -->
         <div v-if="loading" class="loading-msg">
             <div class="loading-content">
                 <p>Preparando tus notas... 🎀</p>
-                
-                <!-- Download Progress -->
                 <div class="progress-section">
                     <div class="progress-bar">
                         <div class="progress-fill" :style="{ width: loadingProgress + '%' }"></div>
                     </div>
-                    <span class="progress-text">Descargando: {{ loadingProgress }}%</span>
-                </div>
-
-                <!-- Render Progress (shows only after download complete) -->
-                <div v-if="loadingProgress === 100" class="progress-section">
-                    <div class="progress-bar">
-                        <div class="progress-fill render-fill" :style="{ width: (renderingProgress / totalPagesToRender * 100) + '%' }"></div>
-                    </div>
-                    <span class="progress-text">Renderizando: {{ renderingProgress }} / {{ totalPagesToRender }} páginas</span>
                 </div>
             </div>
         </div>
-        <div v-else-if="error" class="error-msg">{{ error }}</div>
         
+        <!-- Canvas Pages -->
         <div v-else class="pdf-pages">
             <div 
                 v-for="page in pages" 
                 :key="page" 
                 class="page-wrapper"
             >
-                <!-- Canvas Layer (Image) -->
                 <canvas :id="`pdf-page-${page}`"></canvas>
-                
-                <!-- Text Layer (Selectable) -->
                 <div :id="`text-layer-${page}`" class="textLayer"></div>
             </div>
         </div>
     </div>
 
     <!-- Watermarks (Subtle for study) -->
-    <div class="watermark-layer">
+    <div v-if="!useFallback" class="watermark-layer">
         <div 
             class="floating-mark"
             :style="{ top: dynamicWatermarkPos.y + '%', left: dynamicWatermarkPos.x + '%' }"
@@ -430,6 +429,39 @@ onUnmounted(() => {
 </style>
 
 <style scoped>
+.native-viewer {
+    width: 100%;
+    height: 100%;
+    border: none;
+    background: white;
+}
+
+.fallback-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    background: white;
+}
+
+.fallback-header {
+    background: #ffe4e6;
+    color: #e0218a;
+    padding: 0.5rem;
+    text-align: center;
+    font-size: 0.9rem;
+    border-bottom: 1px solid #ffb7c5;
+}
+
+.debug-url {
+    font-family: monospace;
+    font-size: 0.8rem;
+    margin-top: 0.2rem;
+    color: #555;
+}
+
+.secure-viewer {
+/* ... rest of styles ... */
 .secure-viewer {
     position: relative;
     width: 100vw;
