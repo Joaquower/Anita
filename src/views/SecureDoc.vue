@@ -460,8 +460,7 @@ onUnmounted(() => {
     color: #555;
 }
 
-.secure-viewer {
-/* ... rest of styles ... */
+
 .secure-viewer {
     position: relative;
     width: 100vw;
